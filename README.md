@@ -18,6 +18,14 @@
 
 Este projeto desenvolve uma aplicação completa de análise exploratória de dados (EDA) dos **Dallas Mavericks** na temporada 2024-25, incluindo implementações de **Regressão Linear** e **Regressão Logística** para análises preditivas. A aplicação oferece insights detalhados sobre performance de jogadores e equipe através de uma interface web interativa.
 
+## 🚀 Acesso à Aplicação
+
+### 🌐 **Deploy Online**
+
+**Acesse a aplicação em funcionamento:** [https://dallas-atividade-1.streamlit.app](https://dallas-atividade-1.streamlit.app)
+
+> 💡 **Dica:** A aplicação está hospedada no Streamlit Cloud e pode ser acessada diretamente pelo navegador, sem necessidade de instalação local.
+
 ## 🎯 Objetivos
 
 ### Objetivo Principal
@@ -340,13 +348,13 @@ z = β₀ + β₁x₁ + β₂x₂ + ... + βₙxₙ
 
 Para dúvidas, sugestões ou contribuições:
 
-- **Repositório:** [GitHub - atividade1](https://github.com/Redes-Neurais-BCC/atividade1)
-- **Equipe de Desenvolvimento:**
+- **🌐 Aplicação Online:** [https://dallas-atividade-1.streamlit.app](https://dallas-atividade-1.streamlit.app)
+- **📂 Repositório:** [GitHub - atividade1](https://github.com/Redes-Neurais-BCC/atividade1)
+- **👥 Equipe de Desenvolvimento:**
   - [Henrique Almeida](https://github.com/henriquedalmeida)
   - [Felipe Mendes](https://github.com/FelipeMendes1)
   - [Gison Vilaça](https://github.com/gison-vilaca)
 
 ---
 
-**Desenvolvido para a disciplina de Redes Neurais - Ciência da Computação**  
-**Professor Ryan Azevedo - 2024**
+**Desenvolvido para a disciplina de Redes Neurais - Ciência da Computação**

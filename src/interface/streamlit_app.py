@@ -78,10 +78,10 @@ def load_data():
         processed_dir = ROOT_DIR / "data" / "processed"
         original_dir = ROOT_DIR / "data" / "original"
         
-        players_df = pd.read_csv(processed_dir / "dallas_players_2024-25.csv")
-        games_df = pd.read_csv(processed_dir / "dallas_games_2024-25.csv")
+        players_df = pd.read_csv(processed_dir / "dallas_players_2024-25-26.csv")
+        games_df = pd.read_csv(processed_dir / "dallas_games_2024-25-26.csv")
         
-        original_players_df = pd.read_csv(original_dir / "dal_players_season_stats_media_2024_25.csv")
+        original_players_df = pd.read_csv(original_dir / "dal_players_season_stats_media_2024_25_26.csv")
         
         players_df = add_player_names(players_df, original_players_df)
         

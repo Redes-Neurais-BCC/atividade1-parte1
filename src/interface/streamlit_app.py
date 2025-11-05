@@ -441,29 +441,8 @@ def interactive_analysis(players_df, games_df):
     """Análise interativa com filtros"""
     st.header("🔍 Análise Interativa")
     
-    st.sidebar.header("🎛️ Filtros")
-    
-    min_minutes = st.sidebar.slider(
-        "Minutos mínimos totais",
-        min_value=0,
-        max_value=int(players_df['minutos_total'].max()),
-        value=500,
-        step=50
-    )
-    
-    positions = sorted(players_df['posicao-g-f-fc-cf-c'].unique())
-    position_names = {1: 'G', 2: 'F', 3: 'FC', 4: 'CF', 5: 'C'}
-    selected_positions = st.sidebar.multiselect(
-        "Posições", 
-        options=positions,
-        default=positions,
-        format_func=lambda x: position_names.get(x, f"Posição {x}")
-    )
-    
-    filtered_players = players_df[
-        (players_df['minutos_total'] >= min_minutes) &
-        (players_df['posicao-g-f-fc-cf-c'].isin(selected_positions))
-    ]
+    # Os filtros agora são globais na sidebar
+    filtered_players = players_df  # Já vem filtrado da função main
     
     st.write("")
     
@@ -1566,13 +1545,6 @@ def make_team_prediction(games_df, stat_column, target_value, stat_type, game_co
 def notebook_regression_analysis(games_df):
     """Análise de Regressão Linear baseada no notebook linear_regression_att.ipynb"""
     st.header("📈 Análise de Regressão Linear - Equação 1")
-    st.write("")
-
-
-    if 'notebook_model' in st.session_state:
-        st.success("✅ Modelo treinado encontrado na sessão!")
-    else:
-        st.info("ℹ️ Nenhum modelo treinado encontrado. Treine um modelo abaixo.")
 
     if not SKLEARN_AVAILABLE:
         st.error("⚠️ Scikit-learn não está instalado. Instale com: pip install scikit-learn")
@@ -1688,6 +1660,27 @@ def notebook_regression_analysis(games_df):
 
     st.markdown("---")
 
+    # Status do modelo
+    if 'notebook_model' in st.session_state:
+        try:
+            model_data = st.session_state['notebook_model']
+            if 'target' in model_data and 'features' in model_data:
+                col1, col2 = st.columns([3, 1])
+                with col1:
+                    st.success(f"✅ Modelo treinado encontrado! Variável alvo: {model_data['target']} | Features: {len(model_data['features'])}")
+                with col2:
+                    if st.button("🗑️ Limpar Modelo", key="clear_model_button"):
+                        del st.session_state['notebook_model']
+                        st.rerun()
+            else:
+                st.warning("⚠️ Modelo encontrado, mas dados incompletos. Treine novamente.")
+                del st.session_state['notebook_model']
+        except Exception as e:
+            st.error(f"❌ Erro ao carregar modelo: {e}")
+            del st.session_state['notebook_model']
+    else:
+        st.info("ℹ️ Nenhum modelo treinado encontrado. Treine um modelo abaixo.")
+    
     if st.button("🚀 Treinar Modelo de Regressão Linear", type="primary", use_container_width=True, key="notebook_train_button"):
         with st.spinner("Treinando modelo..."):
             X = games_df[selected_features]
@@ -1729,6 +1722,7 @@ def notebook_regression_analysis(games_df):
             }
 
             st.success("✅ Modelo treinado com sucesso!")
+            st.rerun()  # Força a atualização da interface
 
     if 'notebook_model' in st.session_state:
         model_data = st.session_state['notebook_model']
@@ -1816,11 +1810,14 @@ def notebook_regression_analysis(games_df):
             st.markdown("---")
             st.subheader("📍 Intercepto (β₀)")
 
-            col1, col2 = st.columns([1, 2])
-            with col1:
-                st.metric("Valor do Intercepto (β₀)", f"{intercept:.4f}")
-            with col2:
-                st.info(f"**Interpretação:** Quando todas as variáveis independentes são zero, o valor previsto de {model_data['target']} é {intercept:.4f}.")
+            col_left, col_center, col_right = st.columns([1, 2, 1])
+            with col_center:
+                st.metric(
+                    "Valor do Intercepto (β₀)", 
+                    f"{intercept:.4f}",
+                    help="Valor da variável dependente quando todas as independentes são zero"
+                )
+                st.info(f"**Interpretação:** Quando todas as variáveis independentes são zero, o valor previsto de **{model_data['target']}** é **{intercept:.4f}**.")
 
             st.markdown("---")
             st.subheader("📊 Coeficientes (β₁, β₂, ..., βₙ) e Seus Impactos")
@@ -2570,7 +2567,40 @@ def main():
         st.error("Não foi possível carregar os dados. Verifique se os arquivos estão no local correto.")
         return
 
-    create_summary_metrics(players_df, games_df)
+    st.sidebar.header("🎛️ Filtros Globais")
+    
+    min_minutes = st.sidebar.slider(
+        "Minutos mínimos totais",
+        min_value=0,
+        max_value=int(players_df['minutos_total'].max()),
+        value=0,
+        step=50,
+        help="Filtrar jogadores por minutos mínimos jogados na temporada"
+    )
+    
+    positions = sorted(players_df['posicao-g-f-fc-cf-c'].unique())
+    position_names = {1: 'G', 2: 'F', 3: 'FC', 4: 'CF', 5: 'C'}
+    selected_positions = st.sidebar.multiselect(
+        "Posições", 
+        options=positions,
+        default=positions,
+        format_func=lambda x: position_names.get(x, f"Posição {x}"),
+        help="Selecionar posições para análise"
+    )
+    
+    filtered_players = players_df[
+        (players_df['minutos_total'] >= min_minutes) &
+        (players_df['posicao-g-f-fc-cf-c'].isin(selected_positions))
+    ]
+    
+    st.sidebar.markdown("---")
+    st.sidebar.write(f"**Jogadores selecionados:** {len(filtered_players)}/{len(players_df)}")
+
+    if len(filtered_players) == 0:
+        st.warning("⚠️ Nenhum jogador atende aos critérios selecionados. Ajuste os filtros na sidebar.")
+        return
+
+    create_summary_metrics(filtered_players, games_df)
 
     st.markdown("---")
 
@@ -2585,19 +2615,19 @@ def main():
     ])
 
     with tab1:
-        player_analysis(players_df)
+        player_analysis(filtered_players)
 
     with tab2:
         game_analysis(games_df)
 
     with tab3:
-        advanced_analysis(players_df, games_df)
+        advanced_analysis(filtered_players, games_df)
 
     with tab4:
-        interactive_analysis(players_df, games_df)
+        interactive_analysis(filtered_players, games_df)
 
     with tab5:
-        prediction_interface(players_df, games_df)
+        prediction_interface(filtered_players, games_df)
 
     with tab6:
         notebook_regression_analysis(games_df)

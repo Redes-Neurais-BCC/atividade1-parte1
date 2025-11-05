@@ -22,7 +22,7 @@ Este projeto desenvolve uma aplicação completa de análise exploratória de da
 
 ### 🌐 **Deploy Online**
 
-**Acesse a aplicação em funcionamento:** [https://dallas-atividade-1.streamlit.app](https://dallas-atividade-1.streamlit.app)
+**Acesse a aplicação em funcionamento:** [https://dallas-1-atividade.streamlit.app](https://dallas-atividade-1.streamlit.app)
 
 > 💡 **Dica:** A aplicação está hospedada no Streamlit Cloud e pode ser acessada diretamente pelo navegador, sem necessidade de instalação local.
 

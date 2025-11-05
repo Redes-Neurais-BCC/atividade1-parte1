@@ -1049,7 +1049,6 @@ def player_specific_predictions(players_df):
         st.warning("Não há jogadores com dados suficientes para predição.")
         return
     
-    # Inicializar session state se necessário
     if 'selected_player_idx' not in st.session_state:
         st.session_state.selected_player_idx = None
     
@@ -1068,7 +1067,6 @@ def player_specific_predictions(players_df):
             
             player_options[player_name] = idx
         
-        # Usar uma chave única para o selectbox
         selected_player_name = st.selectbox(
             "Selecione o Jogador:",
             options=list(player_options.keys()),
@@ -1076,14 +1074,11 @@ def player_specific_predictions(players_df):
             key="player_selector"
         )
         
-        # Verificar se o jogador selecionado ainda existe nos dados
         if selected_player_name in player_options:
             selected_player_idx = player_options[selected_player_name]
             
-            # Verificar se o índice existe no DataFrame
             if selected_player_idx in active_players.index:
                 player_data = active_players.loc[selected_player_idx]
-                # Atualizar session state
                 st.session_state.selected_player_idx = selected_player_idx
             else:
                 st.error("Erro: Jogador selecionado não encontrado nos dados.")
@@ -1465,7 +1460,7 @@ def make_team_prediction(games_df, stat_column, target_value, stat_type, game_co
             
     elif stat_type == "Rebotes":
         context_reb_avg = context_games['rebotes-totais'].mean() if 'rebotes-totais' in context_games.columns else 0
-        if target_value <= context_reb_avg * 1.1:  # Meta dentro de 10% da média
+        if target_value <= context_reb_avg * 1.1: 
             probability += 8
             
     elif stat_type == "Assistências":
@@ -2334,7 +2329,6 @@ def logistic_regression_theory_view(games_df):
 
     st.markdown("---")
 
-    # --- TREINAR MODELO ---
     try:
         if 'target' not in df.columns:
             if target_var == 'resultado':
@@ -2371,7 +2365,6 @@ def logistic_regression_theory_view(games_df):
         accuracy = accuracy_score(y_test, y_pred)
         cm = confusion_matrix(y_test, y_pred)
 
-        # --- EXIBIR RESULTADOS ---
         st.markdown("### 📊 Resultados do Modelo")
 
         col1, col2, col3, col4 = st.columns(4)
@@ -2460,7 +2453,6 @@ def logistic_regression_theory_view(games_df):
             else:
                 st.info(f"ℹ️ Neste exemplo, o modelo prevê **Classe 0** (probabilidade < 50%)")
 
-        # --- FAZER PREDIÇÃO ---
         st.markdown("---")
         st.markdown("### 🎯 Fazer Predição Personalizada")
 
@@ -2520,7 +2512,6 @@ def logistic_regression_theory_view(games_df):
             else:
                 st.info(f"ℹ️ O modelo prevê **Classe 0** com {prob_class_0:.1%} de probabilidade")
 
-        # --- VISUALIZAÇÕES ---
         st.markdown("---")
         st.markdown("### 📊 Visualizações")
 
